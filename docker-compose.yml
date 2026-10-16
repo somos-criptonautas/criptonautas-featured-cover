@@ -1,0 +1,18 @@
+# Paste this service into the docker-compose.yml that runs n8n, under "services:".
+# Same compose project = same network, so n8n reaches it at http://criptonautas-featured-ghost-cover:8000/cover
+# cover.env sits next to that docker-compose.yml and holds COVER_TOKEN=<32+ characters>, the same token as the n8n credential.
+# The image is built and published by this repo's GitHub Actions on every push to main.
+services:
+  criptonautas-featured-ghost-cover:
+    image: ghcr.io/somos-criptonautas/criptonautas-featured-ghost-cover:latest
+    container_name: criptonautas-featured-ghost-cover
+    restart: unless-stopped
+    env_file: cover.env
+    read_only: true
+    tmpfs: [/tmp]
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+    mem_limit: 256m
+    cpus: 0.5
+    pids_limit: 64
+    # no "ports": only containers on the same network can reach it
