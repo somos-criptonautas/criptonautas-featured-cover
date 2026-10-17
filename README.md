@@ -1,8 +1,8 @@
+# criptonautas-featured-ghost-cover
+
 **ENGLISH** | [ESPAÑOL](README.es.md)
 
 Maintained by Criptonautas. Not affiliated with or endorsed by the Ghost Foundation.
-
-# criptonautas-featured-ghost-cover
 
 Draws a 1200×630 cover for Ghost posts that have no featured image: the post's category and title on the Criptonautas template from [brand-kit](https://github.com/somos-criptonautas/brand-kit). The title is set in Inter Tight, up to 3 lines, wrapped automatically. Output is PNG or WebP with no metadata.
 

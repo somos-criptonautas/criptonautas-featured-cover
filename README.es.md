@@ -1,8 +1,8 @@
+# criptonautas-featured-ghost-cover
+
 [ENGLISH](README.md) | **ESPAÑOL**
 
 Mantenido por Criptonautas. Sin afiliación ni respaldo de la Ghost Foundation.
-
-# criptonautas-featured-ghost-cover
 
 Genera una portada 1200×630 para los posts de Ghost sin imagen destacada: la categoría y el título del post sobre la plantilla de Criptonautas de [brand-kit](https://github.com/somos-criptonautas/brand-kit). El título va en Inter Tight, hasta 3 líneas, cortado solo. Sale en PNG o WebP sin metadatos.
 
