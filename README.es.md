@@ -80,4 +80,4 @@ GitHub Actions corre las pruebas unitarias, construye la imagen, revisa el conte
 
 Fuente: [Inter Tight](https://github.com/googlefonts/inter-tight) de Rasmus Andersson (SIL Open Font License, [`assets/OFL-inter-tight.txt`](assets/OFL-inter-tight.txt)). Logo: de [brand-kit](https://github.com/somos-criptonautas/brand-kit).
 
-Código: [MIT](LICENSE). Texto del README: CC BY-NC-SA 4.0.
+Código: [MIT](LICENSE). Texto del README: [CC BY-NC-SA 4.0](CC-BY-NC-SA-4.0.txt).

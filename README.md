@@ -80,4 +80,4 @@ GitHub Actions runs the unit tests, builds the image, checks the running contain
 
 Font: [Inter Tight](https://github.com/googlefonts/inter-tight) by Rasmus Andersson (SIL Open Font License, [`assets/OFL-inter-tight.txt`](assets/OFL-inter-tight.txt)). Logo: from [brand-kit](https://github.com/somos-criptonautas/brand-kit).
 
-Code: [MIT](LICENSE). README text: CC BY-NC-SA 4.0.
+Code: [MIT](LICENSE). README text: [CC BY-NC-SA 4.0](CC-BY-NC-SA-4.0.txt).
