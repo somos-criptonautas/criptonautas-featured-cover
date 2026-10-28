@@ -2,9 +2,9 @@
 
 **ENGLISH** | [ESPAÑOL](README.es.md)
 
-Maintained by Criptonautas. Not affiliated with or endorsed by the Ghost Foundation.
+Maintained by Criptonautas. Not affiliated with or endorsed by the Ghost Foundation or Civilized Discourse Construction Kit, Inc.
 
-Draws a 1200×630 cover for Ghost posts that have no featured image: the post's category and title on the Criptonautas template from [brand-kit](https://github.com/somos-criptonautas/brand-kit). The title is set in Inter Tight, up to 3 lines, wrapped automatically. Output is PNG or WebP with no metadata.
+Draws a 1200×630 cover for Ghost posts without a featured image and for Discourse wiki, course and glossary topics: a label and the title on the Criptonautas template from [brand-kit](https://github.com/somos-criptonautas/brand-kit). The title is set in Inter Tight, up to 3 lines, wrapped automatically. Output is PNG or WebP with no metadata.
 
 It is a small internal HTTP service. n8n calls it; it is never exposed to the internet.
 
@@ -12,6 +12,7 @@ It is a small internal HTTP service. n8n calls it; it is never exposed to the in
 
 1. Ghost fires the `post.published` webhook to n8n.
 2. The n8n workflow `ghost-cover-add` reads the post. If it has no featured image, it asks this service for a cover, uploads it to Ghost and sets it as the featured image.
+3. Discourse fires its topic webhook to n8n. The workflow `discourse-community-cover-add` takes topics tagged `wiki` or in the Curso and Glosario categories whose first post has no image, asks for a cover in the `community` style and adds it at the end of the first post, which makes it the topic thumbnail.
 
 ## Install
 
@@ -50,6 +51,7 @@ docker compose up -d criptonautas-featured-ghost-cover
 
 - `POST /cover` with `Authorization: Bearer <COVER_TOKEN>` and JSON `{"category", "title", "format"}` → the image.
   - `format` is `png` (default) or `webp`.
+  - `style` is `article` (default: diagonal hatching and the horizontal logo) or `community` (a grid and the "Criptonautas comunidad" sub-logo).
   - Category up to 30 characters, title up to 140 and 3 lines.
   - `Content-Disposition` carries `cover.<format>`, so Ghost accepts the upload.
   - Errors: `401` wrong token, `400` no `Content-Length`, `413` body over 4 KB, `422` with the reason as text (title too long, invalid JSON, an `image` field).

@@ -30,6 +30,8 @@ image = Image.open(io.BytesIO(webp))
 assert (image.format, image.size) == ("WEBP", (1200, 630)), (image.format, image.size)
 assert not {"exif", "icc_profile", "xmp"} & set(image.info), image.info
 assert headers["Content-Disposition"] == 'attachment; filename="cover.webp"', headers["Content-Disposition"]
+community = json.dumps({"category": "Glosario criptonauta", "title": "Liquidez", "style": "community"}).encode()
+assert call("/cover", community)[0] == 200
 assert call("/cover", good, token="wrong")[0] == 401
 assert call("/cover", b"x" * 5000)[0] == 413
 assert call("/cover", b'{"category": "Curso", "title": "x", "image": "AAAA"}')[0] == 422

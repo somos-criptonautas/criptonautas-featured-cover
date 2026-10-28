@@ -1,7 +1,7 @@
 """HTTP service for the internal Docker network. n8n calls it; it is never published to the internet.
 
 POST /cover   Authorization: Bearer <COVER_TOKEN>
-              JSON {"category", "title", "format": "png" | "webp"}
+              JSON {"category", "title", "format": "png" | "webp", "style": "article" | "community"}
               -> the image, with Content-Disposition cover.<format>
 GET  /health  -> 200 ok
 
@@ -55,7 +55,8 @@ class Handler(BaseHTTPRequestHandler):
             if "image" in request:
                 raise InvalidCoverInput("the illustration is accepted only on the command line")
             image_format = request.get("format", "png")
-            image = render_cover(str(request.get("category", "")), str(request.get("title", "")), None, image_format)
+            image = render_cover(str(request.get("category", "")), str(request.get("title", "")), None, image_format,
+                                 str(request.get("style", "article")))
         except ValueError as error:  # covers InvalidCoverInput, bad JSON and bad UTF-8
             return self.send(422, str(error).encode())
         self.send(200, image, f"image/{image_format}", f"cover.{image_format}")

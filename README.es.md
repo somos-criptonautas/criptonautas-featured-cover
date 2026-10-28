@@ -2,9 +2,9 @@
 
 [ENGLISH](README.md) | **ESPAÑOL**
 
-Mantenido por Criptonautas. Sin afiliación ni respaldo de la Ghost Foundation.
+Mantenido por Criptonautas. Sin afiliación ni respaldo de la Ghost Foundation ni de Civilized Discourse Construction Kit, Inc.
 
-Genera una portada 1200×630 para los posts de Ghost sin imagen destacada: la categoría y el título del post sobre la plantilla de Criptonautas de [brand-kit](https://github.com/somos-criptonautas/brand-kit). El título va en Inter Tight, hasta 3 líneas, cortado solo. Sale en PNG o WebP sin metadatos.
+Genera una portada 1200×630 para los posts de Ghost sin imagen destacada y para los topics de wiki, curso y glosario de Discourse: una etiqueta y el título sobre la plantilla de Criptonautas de [brand-kit](https://github.com/somos-criptonautas/brand-kit). El título va en Inter Tight, hasta 3 líneas, cortado solo. Sale en PNG o WebP sin metadatos.
 
 Es un servicio HTTP interno y chico. Lo llama n8n; nunca se expone a internet.
 
@@ -12,6 +12,7 @@ Es un servicio HTTP interno y chico. Lo llama n8n; nunca se expone a internet.
 
 1. Ghost dispara el webhook `post.published` hacia n8n.
 2. El workflow de n8n `ghost-cover-add` lee el post. Si no tiene imagen destacada, le pide una portada a este servicio, la sube a Ghost y la pone como imagen destacada.
+3. Discourse dispara su webhook de topics hacia n8n. El workflow `discourse-community-cover-add` toma los topics con el tag `wiki` o de las categorías Curso y Glosario cuyo primer post no tiene imagen, pide una portada con el estilo `community` y la agrega al final del primer post, que así pasa a ser la miniatura del topic.
 
 ## Instalar
 
@@ -50,6 +51,7 @@ docker compose up -d criptonautas-featured-ghost-cover
 
 - `POST /cover` con `Authorization: Bearer <COVER_TOKEN>` y JSON `{"category", "title", "format"}` → la imagen.
   - `format` es `png` (por defecto) o `webp`.
+  - `style` es `article` (por defecto: trama diagonal y logo horizontal) o `community` (cuadrícula y el sublogo "Criptonautas comunidad").
   - Categoría hasta 30 caracteres, título hasta 140 y 3 líneas.
   - `Content-Disposition` lleva `cover.<format>`, así Ghost acepta la subida.
   - Errores: `401` token incorrecto, `400` sin `Content-Length`, `413` cuerpo de más de 4 KB, `422` con el motivo en texto (título largo, JSON inválido, un campo `image`).

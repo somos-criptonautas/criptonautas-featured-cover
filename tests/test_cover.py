@@ -48,6 +48,17 @@ class CoverTest(unittest.TestCase):
         self.assertGreater(webp.getpixel((1000, 300))[2], 150)
         self.assertFalse({"exif", "icc_profile", "xmp"} & set(webp.info))
 
+    def test_community_style_has_no_metadata_and_keeps_the_slot_clear(self):
+        png = render_cover("Curso de trading", "Cómo leer el volumen sin confundirlo con la tendencia", style="community")
+        self.assertLessEqual(png_chunk_types(png), PNG_KEEP)
+        rgb = Image.open(io.BytesIO(png)).convert("RGB")
+        self.assertTrue(all(rgb.getpixel((x, y)) == (232, 230, 225) for x in range(700, 760) for y in range(140, 360)))
+        self.assertNotEqual(png, render_cover("Curso de trading", "Cómo leer el volumen sin confundirlo con la tendencia"))
+
+    def test_rejects_unknown_style(self):
+        with self.assertRaises(InvalidCoverInput):
+            render_cover("Curso", "Prueba", style="poster")
+
     def test_rejects_svg_as_illustration(self):
         with self.assertRaises(InvalidCoverInput):
             render_cover("Curso", "Imagen falsa", b"<svg onload=1>")
@@ -83,6 +94,9 @@ class ServerTest(unittest.TestCase):
         self.assertEqual(self.post("x" * 5000).status, 413)
         self.assertEqual(self.post('{"category": "Curso", "title": "x", "image": "AAAA"}').status, 422)
         self.assertEqual(self.post("not json").status, 422)
+        community = json.dumps({"category": "Wiki · Monero", "title": "Prueba", "style": "community"})
+        self.assertEqual(self.post(community).status, 200)
+        self.assertEqual(self.post(json.dumps({"category": "Curso", "title": "x", "style": "poster"})).status, 422)
 
 
 if __name__ == "__main__":
