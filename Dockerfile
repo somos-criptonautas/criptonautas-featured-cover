@@ -8,7 +8,7 @@ COPY assets/InterTight.ttf /usr/share/fonts/truetype/inter-tight/
 RUN fc-cache -f && fc-match "Inter Tight" | grep -q InterTight
 WORKDIR /app
 COPY --chmod=0444 cover.py server.py ./
-COPY --chmod=0444 assets/ ./assets/
+COPY assets/ ./assets/
 USER 65534:65534
 EXPOSE 8000
 HEALTHCHECK --interval=30s --timeout=5s CMD python -c "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health')"
