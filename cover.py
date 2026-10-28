@@ -30,8 +30,9 @@ TITLE_X, TITLE_Y0, TITLE_STEP, TITLE_SIZE, MAX_LINES = 64, 196, 66, 56, 3
 TITLE_MAX_WIDTH = SLOT_X - TITLE_X - 64
 MAX_TITLE, MAX_CATEGORY, MAX_IMAGE_BYTES = 140, 30, 10 * 1024 * 1024
 STYLES = ("article", "community")
-# Bounding box of the wordmark path inside the lockup viewBox (x, y, width, height).
-WORDMARK_BOX = (1703, 425, 6096, 850)
+LABEL_BASELINE, LABEL_SIZE, LABEL_TRACKING = 112, 22, 2.5
+# The pill above the label says where the page lives.
+CHANNELS = {"article": "BLOG", "community": "COMUNIDAD"}
 PNG_KEEP = {b"IHDR", b"PLTE", b"tRNS", b"IDAT", b"IEND"}
 
 
@@ -108,34 +109,37 @@ def build_cover_svg(category, title, image=None, style="article"):
         slot = f'<g stroke="{HALFTONE}" stroke-width="1.2">{hatch}</g>'
     view_box, lockup = svg_inner(LOCKUP.read_text())
     lockup_height = 48
-    if style == "community":
-        logo = community_logo(view_box, lockup)
-    else:
-        logo = (f'<svg x="{TITLE_X}" y="{HEIGHT - 64 - lockup_height}" width="{lockup_height * 7800 / 1550}" '
-                f'height="{lockup_height}" viewBox="{view_box}">{lockup}</svg>')
+    pill, label_x = channel_pill(CHANNELS[style])
+    if label_x + tracked_width(category.upper()) > SLOT_X - 32:
+        raise InvalidCoverInput("the category does not fit next to the channel pill. Shorten it.")
     return (f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {WIDTH} {HEIGHT}" width="{WIDTH}" height="{HEIGHT}">'
             f'<rect width="{WIDTH}" height="{HEIGHT}" fill="{PAPER}"/>'
             f'<clipPath id="s"><rect x="{SLOT_X}" width="{WIDTH - SLOT_X}" height="{HEIGHT}"/></clipPath>'
             f'<g clip-path="url(#s)">{slot}</g>'
-            f'<text x="{TITLE_X}" y="112" font-family="Inter Tight" font-weight="700" font-size="22" letter-spacing="2.5" '
-            f'fill="{VIOLET}">{html.escape(category.upper())}</text>'
+            f'{pill}<text x="{label_x:.1f}" y="{LABEL_BASELINE}" font-family="Inter Tight" font-weight="700" '
+            f'font-size="{LABEL_SIZE}" letter-spacing="{LABEL_TRACKING}" fill="{VIOLET}">{html.escape(category.upper())}</text>'
             f'<text font-family="Inter Tight" font-weight="800" letter-spacing="-1.1" font-size="{TITLE_SIZE}" fill="{INK}">{tspans}</text>'
-            f'{logo}</svg>')
+            f'<svg x="{TITLE_X}" y="{HEIGHT - 64 - lockup_height}" width="{lockup_height * 7800 / 1550}" height="{lockup_height}" '
+            f'viewBox="{view_box}">{lockup}</svg>'
+            f'</svg>')
 
 
-def community_logo(view_box, lockup):
-    """Symbol on the left; on its right the wordmark with "comunidad" above its start, like a sub-brand."""
-    split = lockup.rfind("<path")  # the lockup is the symbol group followed by one wordmark path
-    symbol, wordmark = lockup[:split], lockup[split:]
-    size = 72
-    scale = size / 1550  # same proportions as the horizontal lockup
-    top, text_x = HEIGHT - 64 - size, TITLE_X + WORDMARK_BOX[0] * scale
-    return (f'<svg x="{TITLE_X}" y="{top}" width="{size}" height="{size}" viewBox="0 0 1550 1550">{symbol}</svg>'
-            f'<svg x="{text_x}" y="{top + 30}" width="{WORDMARK_BOX[2] * scale}" height="{WORDMARK_BOX[3] * scale}" '
-            f'viewBox="{" ".join(map(str, WORDMARK_BOX))}">{wordmark}</svg>'
-            # small tracked lowercase over the start of the wordmark reads as its descriptor
-            f'<text x="{text_x}" y="{top + 21}" font-family="Inter Tight" font-weight="500" font-size="20" '
-            f'letter-spacing="2" fill="{INK}">comunidad</text>')
+def tracked_width(text):
+    font = ImageFont.truetype(str(TITLE_FONT), LABEL_SIZE)
+    font.set_variation_by_axes([700])
+    return font.getlength(text) + LABEL_TRACKING * (len(text) - 1)
+
+
+def channel_pill(text):
+    """Outlined pill with the channel name, set like the label so both read as one line; returns it and where the label starts."""
+    pad, height = 16, 40
+    width = tracked_width(text) + 2 * pad
+    top = LABEL_BASELINE - LABEL_SIZE * 0.36 - height / 2  # centred on the capitals
+    pill = (f'<rect x="{TITLE_X}" y="{top:.1f}" width="{width:.1f}" height="{height}" rx="{height / 2}" fill="none" '
+            f'stroke="{HALFTONE}" stroke-width="1.5"/>'
+            f'<text x="{TITLE_X + pad}" y="{LABEL_BASELINE}" font-family="Inter Tight" font-weight="700" '
+            f'font-size="{LABEL_SIZE}" letter-spacing="{LABEL_TRACKING}" fill="{INK}">{text}</text>')
+    return pill, TITLE_X + width + 16
 
 
 def strip_png_metadata(data):

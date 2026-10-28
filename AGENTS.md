@@ -13,7 +13,7 @@ The unit tests need Inter Tight installed (`assets/InterTight.ttf`); without it 
 
 - Output carries no metadata: PNG keeps only `IHDR`, `PLTE`, `tRNS`, `IDAT`, `IEND`; WebP has no EXIF, ICC or XMP.
 - The geometry matches the `portada-1200x630` template in brand-kit's `src/kit.py`. If the template changes there, change it here too.
-- The `community` style splits the lockup into symbol and wordmark (`WORDMARK_BOX` in `cover.py`) and sets "comunidad" in Inter Tight above the wordmark. If the lockup asset changes, measure `WORDMARK_BOX` again.
+- The channel pill and the label share `LABEL_SIZE` and `LABEL_TRACKING`; widths are measured with Pillow at weight 700, so keep them in sync with the SVG text.
 - `assets/criptonautas-horizontal-color.svg` is a copy of brand-kit's `dist/logo/horizontal/`. Replace it from there, never edit it.
 - `wrap_title` measures with Pillow at weight 800 without the -1.1 letter-spacing, so it overestimates and cairo always fits. If the tracking or weight changes, measure again.
 - The server never decodes images from outside: the illustration is command-line only. Keep the token check, the 4 KB body limit and the 10 s timeout.

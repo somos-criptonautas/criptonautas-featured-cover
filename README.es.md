@@ -51,7 +51,7 @@ docker compose up -d criptonautas-featured-cover
 
 - `POST /cover` con `Authorization: Bearer <COVER_TOKEN>` y JSON `{"category", "title", "format"}` → la imagen.
   - `format` es `png` (por defecto) o `webp`.
-  - `style` es `article` (por defecto: trama diagonal y logo horizontal) o `community` (cuadrícula y el sublogo "Criptonautas comunidad").
+  - `style` es `article` (por defecto: pill `BLOG` y trama diagonal) o `community` (pill `COMUNIDAD` y cuadrícula). El pill va a la izquierda de la etiqueta, con la misma letra; si la etiqueta no entra al lado responde `422`.
   - Categoría hasta 30 caracteres, título hasta 140 y 3 líneas.
   - `Content-Disposition` lleva `cover.<format>`, así Ghost acepta la subida.
   - Errores: `401` token incorrecto, `400` sin `Content-Length`, `413` cuerpo de más de 4 KB, `422` con el motivo en texto (título largo, JSON inválido, un campo `image`).
