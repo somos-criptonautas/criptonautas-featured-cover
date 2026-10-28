@@ -6,7 +6,7 @@ on:
   pull_request:
 
 env:
-  IMAGE: ghcr.io/somos-criptonautas/criptonautas-featured-ghost-cover
+  IMAGE: ghcr.io/somos-criptonautas/criptonautas-featured-cover
   COVER_TOKEN: check-token-only-used-inside-this-workflow
 
 jobs:

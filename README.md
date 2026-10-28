@@ -1,4 +1,4 @@
-# criptonautas-featured-ghost-cover
+# criptonautas-featured-cover
 
 **ENGLISH** | [ESPAÑOL](README.es.md)
 
@@ -16,7 +16,7 @@ It is a small internal HTTP service. n8n calls it; it is never exposed to the in
 
 ## Install
 
-GitHub Actions tests the image and publishes it to `ghcr.io/somos-criptonautas/criptonautas-featured-ghost-cover` on every push to `main`. Nothing is built on the server.
+GitHub Actions tests the image and publishes it to `ghcr.io/somos-criptonautas/criptonautas-featured-cover` on every push to `main`. Nothing is built on the server.
 
 Next to the `docker-compose.yml` that runs n8n, create the token file:
 
@@ -27,13 +27,13 @@ umask 077; printf 'COVER_TOKEN=%s\n' "$(openssl rand -hex 32)" > cover.env
 Paste the service from this repo's [`docker-compose.yml`](docker-compose.yml) under `services:` in that `docker-compose.yml`. If the n8n service lists `networks:`, add the same networks to this service. Then:
 
 ```bash
-docker compose up -d criptonautas-featured-ghost-cover
-docker compose ps criptonautas-featured-ghost-cover   # should say "healthy"
+docker compose up -d criptonautas-featured-cover
+docker compose ps criptonautas-featured-cover   # should say "healthy"
 ```
 
 In n8n, an **HTTP Request** node:
 
-- Method `POST`, URL `http://criptonautas-featured-ghost-cover:8000/cover`
+- Method `POST`, URL `http://criptonautas-featured-cover:8000/cover`
 - Authentication: Header Auth, name `Authorization`, value `Bearer <COVER_TOKEN>`
 - Body JSON: `{"category": "...", "title": "...", "format": "webp"}`
 - Response format: **File**. The next node gets the cover as binary data.
@@ -43,8 +43,8 @@ In n8n, an **HTTP Request** node:
 Push to `main`, wait for the Build workflow to pass, then on the server:
 
 ```bash
-docker compose pull criptonautas-featured-ghost-cover
-docker compose up -d criptonautas-featured-ghost-cover
+docker compose pull criptonautas-featured-cover
+docker compose up -d criptonautas-featured-cover
 ```
 
 ## API
